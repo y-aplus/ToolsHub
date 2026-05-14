@@ -128,6 +128,24 @@ p {
     font-size: 0.94rem;
 }
 
+button,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    background: var(--accent);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+button:hover {
+    filter: brightness(0.94);
+}
+
 section.private li {
     background: var(--surface-muted);
     border-style: dashed;
@@ -135,6 +153,131 @@ section.private li {
 
 section.private span {
     color: var(--muted);
+}
+
+.diary-app {
+    max-width: 760px;
+}
+
+.diary-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.back-link {
+    margin-bottom: 18px;
+    color: var(--accent);
+    font-size: 0.92rem;
+}
+
+.diary-composer,
+.diary-timeline {
+    margin-top: 28px;
+}
+
+.diary-composer {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 0 rgba(28, 36, 48, 0.04);
+}
+
+.diary-composer label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.diary-composer textarea {
+    display: block;
+    width: 100%;
+    resize: vertical;
+    min-height: 140px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    background: white;
+}
+
+.diary-composer textarea:focus {
+    border-color: rgba(15, 118, 110, 0.65);
+    outline: 3px solid rgba(15, 118, 110, 0.14);
+}
+
+.diary-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+}
+
+.diary-actions p {
+    margin: 0;
+}
+
+.diary-actions button,
+.secondary-button,
+.delete-post {
+    min-height: 42px;
+    padding: 0 18px;
+}
+
+.section-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.section-title-row h2 {
+    flex: 1;
+    margin: 0;
+}
+
+.secondary-button,
+.delete-post {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.posts {
+    display: grid;
+    gap: 14px;
+}
+
+.post,
+.empty-state {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.post-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.post-meta strong {
+    color: var(--text);
+}
+
+.post p {
+    white-space: pre-wrap;
+    color: var(--text);
+}
+
+.delete-post {
+    margin-top: 12px;
 }
 
 @media (max-width: 640px) {
@@ -154,5 +297,18 @@ section.private span {
     li {
         min-height: auto;
         padding: 16px;
+    }
+
+    .diary-actions,
+    .section-title-row,
+    .post-meta {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .diary-actions button,
+    .secondary-button,
+    .delete-post {
+        width: 100%;
     }
 }

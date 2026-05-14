@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNS風日記 - ToolsHub</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <main class="diary-app">
+        <header class="diary-header">
+            <div>
+                <a class="back-link" href="./index.html">ToolsHubへ戻る</a>
+                <h1>SNS風日記</h1>
+                <p class="lead">入力内容はこの端末のブラウザに保存されます。投稿した日時は自動で記録されます。</p>
+            </div>
+        </header>
+
+        <section class="diary-composer" aria-label="日記を投稿">
+            <form id="diary-form">
+                <label for="diary-text">いまの記録</label>
+                <textarea id="diary-text" name="diary-text" rows="5" placeholder="今日あったこと、考えたこと、残しておきたいこと"></textarea>
+                <div class="diary-actions">
+                    <p id="storage-status">保存先: この端末</p>
+                    <button type="submit">投稿</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="diary-timeline" aria-label="日記一覧">
+            <div class="section-title-row">
+                <h2>タイムライン</h2>
+                <button id="clear-diary" class="secondary-button" type="button">全削除</button>
+            </div>
+            <div id="diary-list" class="posts"></div>
+        </section>
+    </main>
+
+    <template id="diary-post-template">
+        <article class="post">
+            <div class="post-meta">
+                <strong>自分</strong>
+                <time></time>
+            </div>
+            <p></p>
+            <button class="delete-post" type="button">削除</button>
+        </article>
+    </template>
+
+    <script>
+        const STORAGE_KEY = "toolshub-diary-posts";
+        const form = document.querySelector("#diary-form");
+        const textarea = document.querySelector("#diary-text");
+        const list = document.querySelector("#diary-list");
+        const template = document.querySelector("#diary-post-template");
+        const clearButton = document.querySelector("#clear-diary");
+
+        const loadPosts = () => {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? [];
+            } catch {
+                return [];
+            }
+        };
+
+        const savePosts = (posts) => {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        };
+
+        const formatDate = (isoDate) => {
+            return new Intl.DateTimeFormat("ja-JP", {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }).format(new Date(isoDate));
+        };
+
+        const renderPosts = () => {
+            const posts = loadPosts();
+            list.replaceChildren();
+
+            if (posts.length === 0) {
+                const empty = document.createElement("p");
+                empty.className = "empty-state";
+                empty.textContent = "まだ投稿はありません。";
+                list.append(empty);
+                return;
+            }
+
+            for (const post of posts) {
+                const node = template.content.firstElementChild.cloneNode(true);
+                node.dataset.id = post.id;
+                node.querySelector("time").dateTime = post.createdAt;
+                node.querySelector("time").textContent = formatDate(post.createdAt);
+                node.querySelector("p").textContent = post.text;
+                node.querySelector(".delete-post").addEventListener("click", () => {
+                    savePosts(loadPosts().filter((item) => item.id !== post.id));
+                    renderPosts();
+                });
+                list.append(node);
+            }
+        };
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const text = textarea.value.trim();
+
+            if (!text) {
+                textarea.focus();
+                return;
+            }
+
+            const posts = loadPosts();
+            posts.unshift({
+                id: crypto.randomUUID(),
+                text,
+                createdAt: new Date().toISOString()
+            });
+            savePosts(posts);
+            textarea.value = "";
+            renderPosts();
+        });
+
+        clearButton.addEventListener("click", () => {
+            if (confirm("日記をすべて削除しますか？")) {
+                savePosts([]);
+                renderPosts();
+            }
+        });
+
+        renderPosts();
+    </script>
+</body>
+
+</html>
